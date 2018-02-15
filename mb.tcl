@@ -25,7 +25,28 @@ proc calcmb {mbprops img imgfile} {
     image create photo $img -file "$imgfile"
 }
 
-proc adjustzoom {zoom zoomfac} {
+proc naturalnumber {num} {
+    if { [string is integer $num] && ($num > 0)} {
+        return 1
+    } else {
+        puts "Error: $num is not a natural number."
+        return 0
+    }
+}
+
+proc validzoom {num} {
+    if { [string is double $num] && ($num > 0)} {
+        return 1
+    } else {
+        puts "Error: $num is an invalid zoom factor."
+        return 0
+    }
+}
+
+proc saveimg {img} {
+    set ofile [tk_getSaveFile -confirmoverwrite true \
+        -defaultextension ".png"]
+    $img write -format png "$ofile"
 }
 
 canvas .mbpanel -width $mbprops(width) -height $mbprops(height) 
@@ -38,9 +59,21 @@ ttk::label .ctlpanel.zfactitle -text "Zoom factor" -anchor "e"
 ttk::spinbox .ctlpanel.zfacvalue -values $zoomfaclist \
     -command {set zoomfac [.ctlpanel.zfacvalue get]}
 ttk::label .ctlpanel.widthtitle -text "Width" -anchor "e"
-ttk::entry .ctlpanel.widthvalue -textvariable mbprops(width)
+ttk::entry .ctlpanel.widthvalue -textvariable mbprops(width) \
+    -validate focusout -validatecommand {naturalnumber $mbprops(width)} \
+    -invalidcommand {set mbprops(width) 1280}
 ttk::label .ctlpanel.heighttitle -text "Height" -anchor "e"
-ttk::entry .ctlpanel.heightvalue -textvariable mbprops(height)
+ttk::entry .ctlpanel.heightvalue -textvariable mbprops(height) \
+    -validate focusout -validatecommand {naturalnumber $mbprops(height)} \
+    -invalidcommand {set mbprops(height) 720}
+ttk::label .ctlpanel.itertitle -text "Maximum iterations" -anchor "e"
+ttk::entry .ctlpanel.itervalue -textvariable mbprops(maxiter) \
+    -validate focusout -validatecommand {naturalnumber $mbprops(maxiter)} \
+    -invalidcommand {set mbprops(maxiter) 1000}
+ttk::button .ctlpanel.calc -text "Recalculate Mandelbrot" \
+    -command {calcmb mbprops $mbimg "$imgfile"}
+ttk::button .ctlpanel.saveimg -text "Save image" \
+    -command {saveimg $mbimg}
 
 grid .mbpanel -column 0 -row 0
 grid .ctlpanel -column 1 -row 0
@@ -54,6 +87,10 @@ grid .ctlpanel.widthtitle -column 0 -row 3
 grid .ctlpanel.widthvalue -column 1 -row 3
 grid .ctlpanel.heighttitle -column 2 -row 3
 grid .ctlpanel.heightvalue -column 3 -row 3
+grid .ctlpanel.itertitle -column 0 -row 4
+grid .ctlpanel.itervalue -column 1 -row 4
+grid .ctlpanel.calc -column 0 -row 5
+grid .ctlpanel.saveimg -column 1 -row 5
 
 set mbimg [image create photo -file "$imgfile"]
 .mbpanel create image 0 0 -image $mbimg -anchor nw
@@ -67,5 +104,5 @@ bind .mbpanel <Button-1> {
     set mbprops(ci)   [expr {$mbprops(ci) + \
                        $pixwidth*($mbprops(height)/2 - %y)}]
     set mbprops(zoom) [expr {$zoomfac * $mbprops(zoom)}]
-    calcmb mbprops $mbimg "$imgfile";
+    calcmb mbprops $mbimg "$imgfile"
 }
