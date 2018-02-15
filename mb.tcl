@@ -159,6 +159,7 @@ bind .mbpanel <Button-3> {
                        $pixwidth*(%x - $mbprops(width)/2)}]
     set mbprops(ci)   [expr {$mbprops(ci) + \
                        $pixwidth*($mbprops(height)/2 - %y)}]
+    set cstr          [gencstr $mbprops(cr) $mbprops(ci) $pixwidth]
     set mbprops(zoom) [expr {$mbprops(zoom) / $mbprops(zoomfac)}]
     calcmb mbprops $mbimg "$imgfile"
     tk busy forget .mbpanel
