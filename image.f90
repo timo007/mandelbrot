@@ -67,8 +67,6 @@ subroutine colourise(niter, nx, ny, cpt, imgfile)
                         call cpt_seis(normalised(i, j), rgb)
                     case ("plasma")
                         call cpt_plasma(normalised(i, j), rgb)
-                    case ("hot")
-                        call cpt_hot(normalised(i, j), rgb)
                     case ("jet")
                         call cpt_jet(normalised(i, j), rgb)
                     case ("viridis")
@@ -242,37 +240,6 @@ subroutine cpt_plasma(val, rgb)
     &141,136,132,127,122,117,113,108,104,99,&
     &95,91,87,82,78,73,68,64,60,56,&
     &51,47,44,41,38,36,36,37,39,37/)
-
-    call interpcolour(val, lev, r, g, b, rgb)
-end subroutine
-
-subroutine cpt_hot(val, rgb)
-    implicit none
-    real(kind=real64), intent(in)                   :: val
-    integer(kind=int32), intent(out), dimension(3)  :: rgb
-    real(kind=real64), dimension(50)                :: lev
-    integer(kind=int32), dimension(50)              :: r, g, b
-    integer(kind=int32)                             :: i
-
-    do i=1,50
-        lev(i) = real((i-1),real64)/49.0
-    end do
-
-    r = (/6,20,34,47,61,74,88,102,115,129,&
-    &142,156,170,183,197,210,224,238,251,255,&
-    &255,255,255,255,255,255,255,255,255,255,&
-    &255,255,255,255,255,255,255,255,255,255,&
-    &255,255,255,255,255,255,255,255,255,255/)
-    g = (/0,0,0,0,0,0,0,0,0,0,&
-    &0,0,0,0,0,0,0,0,0,10,&
-    &23,37,51,64,78,91,105,119,132,146,&
-    &159,173,187,200,214,227,241,255,255,255,&
-    &255,255,255,255,255,255,255,255,255,255/)
-    b = (/0,0,0,0,0,0,0,0,0,0,&
-    &0,0,0,0,0,0,0,0,0,0,&
-    &0,0,0,0,0,0,0,0,0,0,&
-    &0,0,0,0,0,0,0,0,20,40,&
-    &61,81,102,122,142,163,183,204,224,244/)
 
     call interpcolour(val, lev, r, g, b, rgb)
 end subroutine
