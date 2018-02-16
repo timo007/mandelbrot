@@ -24,6 +24,7 @@ program mandelbrot
     ! Variables read from the command line.
     !
     character(len=1024)         :: imgfile  ! Name of image file to create
+    character(len=128)          :: cpt      ! Name of colour palette to use
     integer(int32)              :: nx       ! Width of image
     integer(int32)              :: ny       ! Height of image
     integer(int32)              :: itermax  ! Maximimum number of iterations
@@ -36,7 +37,7 @@ program mandelbrot
     !
     ! Read the command line.
     !
-    call read_cmd(cr, ci, nx, ny, zoom, itermax, imgfile)
+    call read_cmd(cr, ci, nx, ny, zoom, itermax, cpt, imgfile)
 
     !
     ! Allocate memory for the niter array.
@@ -51,7 +52,7 @@ program mandelbrot
     !
     ! Colorise the set.
     !
-    call colourise(niter, nx, ny, imgfile)
+    call colourise(niter, nx, ny, cpt, imgfile)
 
     deallocate(niter)
 

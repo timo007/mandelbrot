@@ -18,13 +18,14 @@ use mbtypes
 
 contains
 
-subroutine read_cmd(cr, ci, nx, ny, zoom, itermax, imgfile)
+subroutine read_cmd(cr, ci, nx, ny, zoom, itermax, cpt, imgfile)
     real(realmb), intent(out)          :: cr
     real(realmb), intent(out)          :: ci
     integer(int32), intent(out)         :: nx
     integer(int32), intent(out)         :: ny
     real(realmb), intent(out)          :: zoom
     integer(int32), intent(out)         :: itermax
+    character(len=128), intent(out)    :: cpt
     character(len=1024), intent(out)    :: imgfile
 
     character(len=1024)                 :: arg1, arg2, arg3
@@ -40,6 +41,7 @@ subroutine read_cmd(cr, ci, nx, ny, zoom, itermax, imgfile)
     ny      = 1080
     zoom    = 1.0
     itermax = 500
+    cpt     = "haxby"
     imgfile = "mb.ppm"
 
 
@@ -48,6 +50,8 @@ subroutine read_cmd(cr, ci, nx, ny, zoom, itermax, imgfile)
         select case (trim(arg1))
             case ("-o")
                 call get_command_argument(i+1, imgfile)
+            case ("-p")
+                call get_command_argument(i+1, cpt)
             case ("-x")
                 call get_command_argument(i+1, arg2)
                 read(arg2, *, iostat=ioss) nx
