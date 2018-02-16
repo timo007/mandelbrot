@@ -20,16 +20,16 @@ contains
 
 subroutine colourise(niter, nx, ny, imgfile)
     implicit none
-    real(real64), intent(in)        :: niter(nx, ny)
-    integer(int32), intent(in)      :: nx, ny
-    character(len=*), intent(in)    :: imgfile
+    real(real64), intent(in), dimension(nx,ny)  :: niter
+    integer(int32), intent(in)                  :: nx, ny
+    character(len=*), intent(in)                :: imgfile
 
-    real(real64), allocatable       :: niter_flat(:)
-    integer(int32), allocatable     :: niter_rank(:)
-    real(real64), allocatable       :: normalised(:, :)
-    integer(int32)                  :: i, j
-    integer(int32),dimension(3)     :: rgb
-    integer                         :: nout
+    real(real64), allocatable                   :: niter_flat(:)
+    integer(int32), allocatable                 :: niter_rank(:)
+    real(real64), allocatable                   :: normalised(:, :)
+    integer(int32)                              :: i, j
+    integer(int32),dimension(3)                 :: rgb
+    integer                                     :: nout
 
     allocate(normalised(nx, ny))
     allocate(niter_flat(nx*ny))
@@ -55,7 +55,7 @@ subroutine colourise(niter, nx, ny, imgfile)
     do j=ny,1,-1
         do i=1,nx
             if (niter(i,j) > 0) then
-                call haxby(normalised(i, j), rgb)
+                call cpt_haxby(normalised(i, j), rgb)
             else
                 rgb = (/0, 0, 0/)
             end if
@@ -73,17 +73,51 @@ subroutine colourise(niter, nx, ny, imgfile)
 
 end subroutine
 
-subroutine haxby(val, rgb)
+subroutine interpcolour(val, lev, cptr, cptg, cptb, rgb)
     implicit none
-    real(real64), intent(in)    :: val
-    integer(int32), intent(out) :: rgb(3)
-    real(real64)                :: lev(0:32)
-    integer(int32)              :: r(0:32), g(0:32), b(0:32)
-    real(real64)                :: interp
-    integer(int32)              :: i
+    real(real64), intent(in)                    :: val
+    real(real64), intent(in), dimension(:)      :: lev
+    integer(int32), intent(in), dimension(:)    :: cptr, cptg, cptb
+    integer(int32), intent(out), dimension(3)   :: rgb
 
-    do i=0,32
-        lev(i) = 0.03125*real(i,real32)
+    real(real64)                                :: interp
+    integer(int32)                              :: i
+
+    do i=2,size(lev)
+        if ((val >= lev(i-1)) .and. (val < lev(i))) then
+            interp = (val - lev(i-1))/(lev(i) - lev(i-1))
+            rgb(1) = int(interp*(cptr(i)-cptr(i-1)), int32) + cptr(i-1)
+            rgb(2) = int(interp*(cptg(i)-cptg(i-1)), int32) + cptg(i-1)
+            rgb(3) = int(interp*(cptb(i)-cptb(i-1)), int32) + cptb(i-1)
+        endif
+    end do
+end subroutine
+
+subroutine cpt_grey(val, rgb)
+    implicit none
+    real(real64), intent(in)                    :: val
+    integer(int32), intent(out), dimension(3)   :: rgb
+    real(real64), dimension(2)                  :: lev
+    integer(int32), dimension(2)                :: r, g, b
+
+    lev = (/0, 1/) 
+    r   = (/0, 255/)
+    g   = (/0, 255/)
+    b   = (/0, 255/)
+
+    call interpcolour(val, lev, r, g, b, rgb)
+end subroutine
+
+subroutine cpt_haxby(val, rgb)
+    implicit none
+    real(real64), intent(in)                    :: val
+    integer(int32), intent(out), dimension(3)   :: rgb
+    real(real64), dimension(33)                 :: lev
+    integer(int32), dimension(33)               :: r, g, b
+    integer(int32)                              :: i
+
+    do i=1,33
+        lev(i) = 0.03125*real((i-1),real32)
     end do
 
     r = (/ 10, 10, 40, 20,  0,  0,  0, 26, 13, 25, 50, 68, 97,&
@@ -96,14 +130,7 @@ subroutine haxby(val, rgb)
         &225,200,174,168,162,141,121,104, 87, 69, 75, 78, 90,&
         &124,158,174,196,215,235,253/)
 
-    do i=1,32
-        if ((val >= lev(i-1)) .and. (val < lev(i))) then
-            interp = (val - lev(i-1))/(lev(i) - lev(i-1))
-            rgb(1) = int(interp*(r(i)-r(i-1)), int32) + r(i-1)
-            rgb(2) = int(interp*(g(i)-g(i-1)), int32) + g(i-1)
-            rgb(3) = int(interp*(b(i)-b(i-1)), int32) + b(i-1)
-        endif
-    end do
+    call interpcolour(val, lev, r, g, b, rgb)
 end subroutine
 
 end module
