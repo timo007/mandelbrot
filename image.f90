@@ -20,16 +20,16 @@ contains
 
 subroutine colourise(niter, nx, ny, imgfile)
     implicit none
-    real(real64), intent(in), dimension(nx,ny)  :: niter
-    integer(int32), intent(in)                  :: nx, ny
-    character(len=*), intent(in)                :: imgfile
+    real(kind=real64), intent(in), dimension(nx,ny) :: niter
+    integer(kind=int32), intent(in)                 :: nx, ny
+    character(len=*), intent(in)                    :: imgfile
 
-    real(real64), allocatable                   :: niter_flat(:)
-    integer(int32), allocatable                 :: niter_rank(:)
-    real(real64), allocatable                   :: normalised(:, :)
-    integer(int32)                              :: i, j
-    integer(int32),dimension(3)                 :: rgb
-    integer                                     :: nout
+    real(kind=real64), allocatable                  :: niter_flat(:)
+    integer(kind=int32), allocatable                :: niter_rank(:)
+    real(kind=real64), allocatable                  :: normalised(:, :)
+    integer(kind=int32)                             :: i, j
+    integer(kind=int32),dimension(3)                :: rgb
+    integer                                         :: nout
 
     allocate(normalised(nx, ny))
     allocate(niter_flat(nx*ny))
@@ -75,13 +75,13 @@ end subroutine
 
 subroutine interpcolour(val, lev, cptr, cptg, cptb, rgb)
     implicit none
-    real(real64), intent(in)                    :: val
-    real(real64), intent(in), dimension(:)      :: lev
-    integer(int32), intent(in), dimension(:)    :: cptr, cptg, cptb
-    integer(int32), intent(out), dimension(3)   :: rgb
+    real(kind=real64), intent(in)                   :: val
+    real(kind=real64), intent(in), dimension(:)     :: lev
+    integer(kind=int32), intent(in), dimension(:)   :: cptr, cptg, cptb
+    integer(kind=int32), intent(out), dimension(3)  :: rgb
 
-    real(real64)                                :: interp
-    integer(int32)                              :: i
+    real(kind=real64)                               :: interp
+    integer(kind=int32)                             :: i
 
     do i=2,size(lev)
         if ((val >= lev(i-1)) .and. (val < lev(i))) then
@@ -95,10 +95,10 @@ end subroutine
 
 subroutine cpt_grey(val, rgb)
     implicit none
-    real(real64), intent(in)                    :: val
-    integer(int32), intent(out), dimension(3)   :: rgb
-    real(real64), dimension(2)                  :: lev
-    integer(int32), dimension(2)                :: r, g, b
+    real(kind=real64), intent(in)                   :: val
+    integer(kind=int32), intent(out), dimension(3)  :: rgb
+    real(kind=real64), dimension(2)                 :: lev
+    integer(kind=int32), dimension(2)               :: r, g, b
 
     lev = (/0, 1/) 
     r   = (/0, 255/)
@@ -110,11 +110,11 @@ end subroutine
 
 subroutine cpt_haxby(val, rgb)
     implicit none
-    real(real64), intent(in)                    :: val
-    integer(int32), intent(out), dimension(3)   :: rgb
-    real(real64), dimension(32)                 :: lev
-    integer(int32), dimension(32)               :: r, g, b
-    integer(int32)                              :: i
+    real(kind=real64), intent(in)                   :: val
+    integer(kind=int32), intent(out), dimension(3)  :: rgb
+    real(kind=real64), dimension(32)                :: lev
+    integer(kind=int32), dimension(32)              :: r, g, b
+    integer(kind=int32)                             :: i
 
     do i=1,32
         lev(i) = real((i-1),real32)/31.0
