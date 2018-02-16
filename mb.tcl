@@ -135,7 +135,7 @@ grid .ctlpanel.cptmenu -column 1 -row 5
 grid .ctlpanel.calc -column 0 -row 6
 grid .ctlpanel.saveimg -column 1 -row 6
 
-set mbimg [image create photo -file "$imgfile"]
+set mbimg [image create photo]
 .mbpanel create image 0 0 -image $mbimg -anchor nw
 tk busy hold .mbpanel
 tk busy hold .ctlpanel.calc
