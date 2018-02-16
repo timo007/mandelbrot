@@ -9,6 +9,7 @@ set mbprops(ci)         0.0
 set mbprops(zoom)       1.0
 set mbprops(maxiter)    1000
 set mbprops(zoomfac)    1.0
+set mbprops(cpt)        "haxby"
 
 set cstr      "0.0 + 0.0i"
 set imgfile   "mb.ppm"
@@ -39,7 +40,7 @@ proc calcmb {mbprops img imgfile} {
     # Compute the new Mandelbrot image.
     #
     exec mb -c $mb(cr) $mb(ci) -z $mb(zoom) -i $mb(maxiter) -o "$imgfile" \
-        -x $mb(width) -y $mb(height) 
+        -x $mb(width) -y $mb(height) -p $mb(cpt)
     #
     # Update the image displayed on the screen.
     #
@@ -92,6 +93,16 @@ ttk::label .ctlpanel.itertitle -text "Maximum iterations" -anchor "e"
 ttk::entry .ctlpanel.itervalue -textvariable mbprops(maxiter) \
     -validate focusout -validatecommand {naturalnumber $mbprops(maxiter)} \
     -invalidcommand {set mbprops(maxiter) 1000}
+ttk::label .ctlpanel.cpttitle -text "Colour palette" -anchor "e"
+ttk::menubutton .ctlpanel.cptmenu -menu .ctlpanel.cptmenu.cpt -textvariable mbprops(cpt)
+menu .ctlpanel.cptmenu.cpt
+.ctlpanel.cptmenu.cpt add command -label "grey" -command {set mbprops(cpt) "grey"}
+.ctlpanel.cptmenu.cpt add command -label "haxby" -command {set mbprops(cpt) "haxby"}
+.ctlpanel.cptmenu.cpt add command -label "Jet" -command {set mbprops(cpt) "jet"}
+.ctlpanel.cptmenu.cpt add command -label "plasma" -command {set mbprops(cpt) "plasma"}
+.ctlpanel.cptmenu.cpt add command -label "rainbow" -command {set mbprops(cpt) "rainbow"}
+.ctlpanel.cptmenu.cpt add command -label "seis" -command {set mbprops(cpt) "seis"}
+.ctlpanel.cptmenu.cpt add command -label "viridis" -command {set mbprops(cpt) "viridis"}
 ttk::button .ctlpanel.calc -text "Recalculate Mandelbrot" \
     -command {
         tk busy hold .mbpanel;
@@ -119,8 +130,10 @@ grid .ctlpanel.heighttitle -column 2 -row 3
 grid .ctlpanel.heightvalue -column 3 -row 3
 grid .ctlpanel.itertitle -column 0 -row 4
 grid .ctlpanel.itervalue -column 1 -row 4
-grid .ctlpanel.calc -column 0 -row 5
-grid .ctlpanel.saveimg -column 1 -row 5
+grid .ctlpanel.cpttitle -column 0 -row 5
+grid .ctlpanel.cptmenu -column 1 -row 5
+grid .ctlpanel.calc -column 0 -row 6
+grid .ctlpanel.saveimg -column 1 -row 6
 
 set mbimg [image create photo -file "$imgfile"]
 .mbpanel create image 0 0 -image $mbimg -anchor nw
