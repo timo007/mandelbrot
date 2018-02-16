@@ -21,18 +21,18 @@ contains
 subroutine fillplane(cr, ci, nx, ny, zoom, itermax, niter)
     implicit none
 
-    real(realmb), intent(in)       :: cr
-    real(realmb), intent(in)       :: ci
-    integer(int32), intent(in)     :: nx
-    integer(int32), intent(in)     :: ny
-    real(realmb), intent(in)       :: zoom
-    integer(int32), intent(in)     :: itermax
-    real(real64), intent(out)      :: niter(nx, ny)
+    real(realmb), intent(in)                        :: cr
+    real(realmb), intent(in)                        :: ci
+    integer(int32), intent(in)                      :: nx
+    integer(int32), intent(in)                      :: ny
+    real(realmb), intent(in)                        :: zoom
+    integer(int32), intent(in)                      :: itermax
+    real(real64), intent(out),  dimension(nx, ny)   :: niter
 
-    real(realmb)                   :: inc
-    real(realmb)                   :: dx, dy
-    integer(int32)                 :: i, j
-    complex(realmb)                :: c
+    real(realmb)                                    :: inc
+    real(realmb)                                    :: dx, dy
+    integer(int32)                                  :: i, j
+    complex(realmb)                                 :: c
 
     inc = 4.0/real(ny,realmb)/zoom
 
