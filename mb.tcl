@@ -1,6 +1,7 @@
 #!/usr/bin/wish
 
 ttk::style theme use classic
+ttk::style configure Header.TLabel -font TkHeadingFont
 
 #
 # A procedure to set default values for the Mandelbrot set.
@@ -62,43 +63,41 @@ proc saveimg {img} {
     $img write -format png "$ofile"
 }
 
-font create labelfont -family {Liberation Sans} -size 14 -weight bold
-font create textfont -family {Liberation Sans} -size 12 -weight normal
 
 canvas .mbpanel -width $mbprops(width) -height $mbprops(height) 
 ttk::frame .ctlpanel 
 
 ttk::frame .ctlpanel.ctr
-ttk::label .ctlpanel.ctr.title -text "Mandelprot properties" -font labelfont
-ttk::label .ctlpanel.ctr.rlab -anchor "w" -text "Real" -font textfont
-ttk::label .ctlpanel.ctr.ilab -anchor "w" -text "Imag" -font textfont
+ttk::label .ctlpanel.ctr.title -text "Mandelprot properties" \
+    -style Header.TLabel
+ttk::label .ctlpanel.ctr.rlab -anchor "w" -text "Real"
+ttk::label .ctlpanel.ctr.ilab -anchor "w" -text "Imag"
 ttk::entry .ctlpanel.ctr.real -textvariable mbprops(cr) \
-    -validate key -validatecommand {validctr %P} -font textfont
+    -validate key -validatecommand {validctr %P}
 ttk::entry .ctlpanel.ctr.imag -textvariable mbprops(ci) \
-    -validate key -validatecommand {validctr %P} -font textfont
+    -validate key -validatecommand {validctr %P}
 
-ttk::label .ctlpanel.ctr.zlab -text "Current zoom" -font textfont
-ttk::label .ctlpanel.ctr.zval -anchor "w" -textvariable mbprops(zoom) \
-    -font textfont
-ttk::label .ctlpanel.ctr.zflab -text "Zoom factor" -anchor "e" \
-    -font textfont
+ttk::label .ctlpanel.ctr.zlab -text "Current zoom"
+ttk::label .ctlpanel.ctr.zval -anchor "w" -textvariable mbprops(zoom) 
+ttk::label .ctlpanel.ctr.zflab -text "Zoom factor" -anchor "e" 
 ttk::entry .ctlpanel.ctr.zfval -textvariable mbprops(zoomfac) \
-    -validate key -validatecommand {validzoom %P} -font textfont
+    -validate key -validatecommand {validzoom %P}
 
-ttk::label .ctlpanel.ctr.iterlab -text "Maximum iterations" -anchor "e"
+ttk::label .ctlpanel.ctr.iterlab -text "Maximum iterations"
 ttk::entry .ctlpanel.ctr.iterval -textvariable mbprops(maxiter) \
     -validate key -validatecommand {naturalnumber %P}
 
 ttk::frame .ctlpanel.img -padding {0 20 0 0}
-ttk::label .ctlpanel.img.title -text "Image properties" -font labelfont
-ttk::label .ctlpanel.img.wlab -text "Width" -anchor "e"
+ttk::label .ctlpanel.img.title -text "Image properties" \
+    -style Header.TLabel
+ttk::label .ctlpanel.img.wlab -text "Width"
 ttk::entry .ctlpanel.img.wval -textvariable mbprops(width) \
     -validate key -validatecommand {naturalnumber %P}
-ttk::label .ctlpanel.img.hlab -text "Height" -anchor "e"
+ttk::label .ctlpanel.img.hlab -text "Height"
 ttk::entry .ctlpanel.img.hval -textvariable mbprops(height) \
     -validate key -validatecommand {naturalnumber %P}
 
-ttk::label .ctlpanel.img.cptlab -text "Colour palette" -anchor "e"
+ttk::label .ctlpanel.img.cptlab -text "Colour palette"
 ttk::menubutton .ctlpanel.img.cptmenu -menu .ctlpanel.img.cptmenu.cpt \
     -textvariable mbprops(cpt)
 menu .ctlpanel.img.cptmenu.cpt
@@ -117,18 +116,30 @@ menu .ctlpanel.img.cptmenu.cpt
 .ctlpanel.img.cptmenu.cpt add command -label "viridis" \
     -command {set mbprops(cpt) "viridis"}
 
-ttk::button .ctlpanel.calc -text "Recalculate Mandelbrot" \
+ttk::frame .ctlpanel.buttons -padding {0 20 0 0}
+ttk::button .ctlpanel.buttons.calc -text "Recalculate" \
     -command {
         tk busy hold .mbpanel;
-        tk busy hold .ctlpanel.calc;
+        tk busy hold .ctlpanel
         update;
         tk busy configure .mbpanel -cursor "watch";
         calcmb mbprops $mbimg
         tk busy forget .mbpanel
-        tk busy forget .ctlpanel.calc
+        tk busy forget .ctlpanel
     }
-ttk::button .ctlpanel.saveimg -text "Save image" \
+ttk::button .ctlpanel.buttons.saveimg -text "Save image" \
     -command {saveimg $mbimg}
+ttk::button .ctlpanel.buttons.reset -text "Reset" \
+    -command {
+        defaultvals mbprops
+        tk busy hold .mbpanel;
+        tk busy hold .ctlpanel;
+        update;
+        tk busy configure .mbpanel -cursor "watch";
+        calcmb mbprops $mbimg
+        tk busy forget .mbpanel
+        tk busy forget .ctlpanel
+    }
 
 grid .mbpanel -column 0 -row 0
 grid .ctlpanel -column 1 -row 0
@@ -148,7 +159,7 @@ grid .ctlpanel.ctr.zfval -column 1 -row 4
 grid .ctlpanel.ctr.iterlab -column 0 -row 5
 grid .ctlpanel.ctr.iterval -column 1 -row 5
 
-grid .ctlpanel.img -column 0 -row 2
+grid .ctlpanel.img -column 0 -row 1
 grid .ctlpanel.img.title -column 0 -row 0 -columnspan 4
 grid .ctlpanel.img.wlab -column 0 -row 1
 grid .ctlpanel.img.wval -column 1 -row 1
@@ -157,8 +168,10 @@ grid .ctlpanel.img.hval -column 3 -row 1
 grid .ctlpanel.img.cptlab -column 0 -row 2
 grid .ctlpanel.img.cptmenu -column 1 -row 2
 
-grid .ctlpanel.calc -column 0 -row 6
-grid .ctlpanel.saveimg -column 1 -row 6
+grid .ctlpanel.buttons -column 0 -row 2
+grid .ctlpanel.buttons.calc -column 0 -row 0
+grid .ctlpanel.buttons.saveimg -column 1 -row 0
+grid .ctlpanel.buttons.reset -column 2 -row 0
 
 #
 # Create and display the initial image.
@@ -168,16 +181,16 @@ set mbimg [image create photo -format ppm \
     -width $mbprops(width) -height $mbprops(height)]
 .mbpanel create image 0 0 -image $mbimg -anchor nw
 tk busy hold .mbpanel
-tk busy hold .ctlpanel.calc
+tk busy hold .ctlpanel
 update
 tk busy configure .mbpanel -cursor "watch"
 calcmb mbprops $mbimg
 tk busy forget .mbpanel
-tk busy forget .ctlpanel.calc
+tk busy forget .ctlpanel
 
 bind .mbpanel <Button-1> {
     tk busy hold .mbpanel
-    tk busy hold .ctlpanel.calc
+    tk busy hold .ctlpanel
     update
     tk busy configure .mbpanel -cursor "watch"
     set pixwidth      [expr {4.0/$mbprops(height)/$mbprops(zoom)}]
@@ -188,12 +201,12 @@ bind .mbpanel <Button-1> {
     set mbprops(zoom) [expr {$mbprops(zoom) * $mbprops(zoomfac)}]
     calcmb mbprops $mbimg
     tk busy forget .mbpanel
-    tk busy forget .ctlpanel.calc
+    tk busy forget .ctlpanel
 }
 
 bind .mbpanel <Button-3> {
     tk busy hold .mbpanel
-    tk busy hold .ctlpanel.calc
+    tk busy hold .ctlpanel
     update
     tk busy configure .mbpanel -cursor "watch"
     set pixwidth      [expr {4.0/$mbprops(height)/$mbprops(zoom)}]
@@ -204,5 +217,5 @@ bind .mbpanel <Button-3> {
     set mbprops(zoom) [expr {$mbprops(zoom) / $mbprops(zoomfac)}]
     calcmb mbprops $mbimg
     tk busy forget .mbpanel
-    tk busy forget .ctlpanel.calc
+    tk busy forget .ctlpanel
 }
