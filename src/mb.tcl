@@ -20,6 +20,9 @@ proc defaultvals {mbprops} {
 }
 defaultvals mbprops
 
+#
+# Call the program which computes the Mandelbrot set image.
+#
 proc calcmb {mbprops img} {
     upvar 1 ${mbprops} mb
     #
@@ -33,6 +36,9 @@ proc calcmb {mbprops img} {
     image create photo $img -format ppm -file "$mb(ifile)"
 }
 
+#
+# Test if a number is natural.
+#
 proc naturalnumber {num} {
     if { [string is integer $num] && ($num > 0)} {
         return 1
@@ -41,6 +47,9 @@ proc naturalnumber {num} {
     }
 }
 
+#
+# Test if a number forms part of a valid centre coordinate.
+#
 proc validctr {num} {
     if { [string is double $num] } {
         return 1
@@ -49,6 +58,9 @@ proc validctr {num} {
     }
 }
 
+#
+# Test if a number is a valid zoom value.
+#
 proc validzoom {num} {
     if { [string is double $num] && ($num > 0)} {
         return 1
@@ -57,6 +69,9 @@ proc validzoom {num} {
     }
 }
 
+#
+# Save the Mandelbrot image as a PNG file.
+#
 proc saveimg {img} {
     set ofile [tk_getSaveFile -confirmoverwrite true \
         -defaultextension ".png"]
@@ -65,6 +80,9 @@ proc saveimg {img} {
     }
 }
 
+#
+# The widgets.
+#
 canvas .mbpanel -width $mbprops(width) -height $mbprops(height) 
 ttk::frame .ctlpanel 
 
