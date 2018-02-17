@@ -33,6 +33,24 @@ proc calcmb {mbprops} {
 }
 
 #
+# Limit canvas dimensions to no bigger than 1280x720
+#
+proc canwidth {width} {
+    if { $width > 1280 } {
+        return 1280
+    } else {
+        return $width
+    } 
+}
+ 
+proc canheight {height} {
+    if { $height > 720 } {
+        return 720
+    } else {
+        return $height
+    } 
+}
+#
 # Test if a number is natural.
 #
 proc naturalnumber {num} {
@@ -79,7 +97,8 @@ proc saveimg {img} {
 #
 # The widgets.
 #
-canvas .mbpanel -width $mbprops(width) -height $mbprops(height) 
+canvas .mbpanel -width [canwidth $mbprops(width)] \
+    -height [canheight $mbprops(height)]
 ttk::frame .ctlpanel 
 
 ttk::frame .ctlpanel.ctr
@@ -140,7 +159,8 @@ ttk::button .ctlpanel.buttons.calc -text "Recalculate" \
         update;
         tk busy configure .mbpanel -cursor "watch";
         calcmb mbprops
-        .mbpanel configure -width $mbprops(width) -height $mbprops(height)
+        .mbpanel configure -width [canwidth $mbprops(width)] \
+            -height [canheight $mbprops(height)]
         image create photo $mbimg -format ppm -file "$mbprops(ifile)"
         tk busy forget .mbpanel
         tk busy forget .ctlpanel
@@ -155,7 +175,8 @@ ttk::button .ctlpanel.buttons.reset -text "Reset" \
         update;
         tk busy configure .mbpanel -cursor "watch";
         calcmb mbprops
-        .mbpanel configure -width $mbprops(width) -height $mbprops(height)
+        .mbpanel configure -width [canwidth $mbprops(width)] \
+            -height [canheight $mbprops(height)]
         image create photo $mbimg -format ppm -file "$mbprops(ifile)"
         tk busy forget .mbpanel
         tk busy forget .ctlpanel
@@ -212,7 +233,8 @@ tk busy hold .ctlpanel
 update
 tk busy configure .mbpanel -cursor "watch"
 calcmb mbprops
-.mbpanel configure -width $mbprops(width) -height $mbprops(height)
+.mbpanel configure -width [canwidth $mbprops(width)] \
+    -height [canheight $mbprops(height)]
 image create photo $mbimg -format ppm -file "$mbprops(ifile)"
 tk busy forget .mbpanel
 tk busy forget .ctlpanel
@@ -229,7 +251,8 @@ bind .mbpanel <Button-1> {
                        $pixwidth*($mbprops(height)/2 - %y)}]
     set mbprops(zoom) [expr {$mbprops(zoom) * $mbprops(zoomfac)}]
     calcmb mbprops
-    .mbpanel configure -width $mbprops(width) -height $mbprops(height)
+    .mbpanel configure -width [canwidth $mbprops(width)] \
+        -height [canheight $mbprops(height)]
     image create photo $mbimg -format ppm -file "$mbprops(ifile)"
     tk busy forget .mbpanel
     tk busy forget .ctlpanel
@@ -247,7 +270,8 @@ bind .mbpanel <Button-3> {
                        $pixwidth*($mbprops(height)/2 - %y)}]
     set mbprops(zoom) [expr {$mbprops(zoom) / $mbprops(zoomfac)}]
     calcmb mbprops
-    .mbpanel configure -width $mbprops(width) -height $mbprops(height)
+    .mbpanel configure -width [canwidth $mbprops(width)] \
+        -height [canheight $mbprops(height)]
     image create photo $mbimg -format ppm -file "$mbprops(ifile)"
     tk busy forget .mbpanel
     tk busy forget .ctlpanel
