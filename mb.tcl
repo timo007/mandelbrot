@@ -70,34 +70,34 @@ ttk::frame .ctlpanel
 ttk::frame .ctlpanel.ctr
 ttk::label .ctlpanel.ctr.title -text "Mandelprot properties" \
     -style Header.TLabel
-ttk::label .ctlpanel.ctr.rlab -anchor "w" -text "Real"
-ttk::label .ctlpanel.ctr.ilab -anchor "w" -text "Imag"
+ttk::label .ctlpanel.ctr.rlab -anchor "w" -text "Real" -anchor e
+ttk::label .ctlpanel.ctr.ilab -anchor "w" -text "Imag" -anchor e
 ttk::entry .ctlpanel.ctr.real -textvariable mbprops(cr) \
     -validate key -validatecommand {validctr %P}
 ttk::entry .ctlpanel.ctr.imag -textvariable mbprops(ci) \
     -validate key -validatecommand {validctr %P}
 
-ttk::label .ctlpanel.ctr.zlab -text "Current zoom"
+ttk::label .ctlpanel.ctr.zlab -text "Current zoom" -anchor e
 ttk::label .ctlpanel.ctr.zval -anchor "w" -textvariable mbprops(zoom) 
 ttk::label .ctlpanel.ctr.zflab -text "Zoom factor" -anchor "e" 
 ttk::entry .ctlpanel.ctr.zfval -textvariable mbprops(zoomfac) \
     -validate key -validatecommand {validzoom %P}
 
-ttk::label .ctlpanel.ctr.iterlab -text "Maximum iterations"
+ttk::label .ctlpanel.ctr.iterlab -text "Iterations"
 ttk::entry .ctlpanel.ctr.iterval -textvariable mbprops(maxiter) \
     -validate key -validatecommand {naturalnumber %P}
 
 ttk::frame .ctlpanel.img -padding {0 20 0 0}
 ttk::label .ctlpanel.img.title -text "Image properties" \
     -style Header.TLabel
-ttk::label .ctlpanel.img.wlab -text "Width"
-ttk::entry .ctlpanel.img.wval -textvariable mbprops(width) -width 6 \
+ttk::label .ctlpanel.img.wlab -text "Width" -anchor e
+ttk::entry .ctlpanel.img.wval -textvariable mbprops(width) -width 10 \
     -validate key -validatecommand {naturalnumber %P}
-ttk::label .ctlpanel.img.hlab -text "Height"
-ttk::entry .ctlpanel.img.hval -textvariable mbprops(height) -width 6 \
+ttk::label .ctlpanel.img.hlab -text "Height" -anchor e
+ttk::entry .ctlpanel.img.hval -textvariable mbprops(height) -width 10 \
     -validate key -validatecommand {naturalnumber %P}
 
-ttk::label .ctlpanel.img.cptlab -text "Colour palette"
+ttk::label .ctlpanel.img.cptlab -text "Palette"
 ttk::menubutton .ctlpanel.img.cptmenu -menu .ctlpanel.img.cptmenu.cpt \
     -textvariable mbprops(cpt)
 menu .ctlpanel.img.cptmenu.cpt
@@ -145,7 +145,7 @@ grid .mbpanel -column 0 -row 0
 grid .ctlpanel -column 1 -row 0
 
 #
-# Position the frame with the central coordinates and zoom values.
+# Position the frame with the Mandelbrot settings.
 #
 grid .ctlpanel.ctr -column 0 -row 0
 grid .ctlpanel.ctr.title -column 0 -row 0 -columnspan 2
@@ -160,6 +160,9 @@ grid .ctlpanel.ctr.zfval -column 1 -row 4
 grid .ctlpanel.ctr.iterlab -column 0 -row 5
 grid .ctlpanel.ctr.iterval -column 1 -row 5
 
+#
+# Position the frame with the image settings.
+#
 grid .ctlpanel.img -column 0 -row 1
 grid .ctlpanel.img.title -column 0 -row 0 -columnspan 4
 grid .ctlpanel.img.wlab -column 0 -row 1
@@ -169,6 +172,9 @@ grid .ctlpanel.img.hval -column 3 -row 1
 grid .ctlpanel.img.cptlab -column 0 -row 2
 grid .ctlpanel.img.cptmenu -column 1 -row 2
 
+#
+# The buttons at the bottom.
+#
 grid .ctlpanel.buttons -column 0 -row 2
 grid .ctlpanel.buttons.calc -column 0 -row 0
 grid .ctlpanel.buttons.saveimg -column 1 -row 0
