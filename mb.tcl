@@ -2,28 +2,34 @@
 
 ttk::style theme use classic
 
-set mbprops(width)      1280
-set mbprops(height)     720
-set mbprops(cr)         0.0
-set mbprops(ci)         0.0
-set mbprops(zoom)       1.0
-set mbprops(zoomfac)    5.0
-set mbprops(maxiter)    1000
-set mbprops(cpt)        "haxby"
+#
+# A procedure to set default values for the Mandlebrot set.
+#
+proc defaultvals {mbprops} {
+    upvar 1 ${mbprops} mb
+    set mb(width)      1280
+    set mb(height)     720
+    set mb(cr)         0.0
+    set mb(ci)         0.0
+    set mb(zoom)       1.0
+    set mb(zoomfac)    5.0
+    set mb(maxiter)    1000
+    set mb(cpt)        "haxby"
+    set mb(ifile)      "mb.ppm"
+}
+defaultvals mbprops
 
-set imgfile   "mb.ppm"
-
-proc calcmb {mbprops img imgfile} {
+proc calcmb {mbprops img} {
     upvar 1 ${mbprops} mb
     #
     # Compute the new Mandelbrot image.
     #
-    exec mb -c $mb(cr) $mb(ci) -z $mb(zoom) -i $mb(maxiter) -o "$imgfile" \
-        -x $mb(width) -y $mb(height) -p $mb(cpt)
+    exec mb -c $mb(cr) $mb(ci) -z $mb(zoom) -i $mb(maxiter) \
+        -o "$mb(ifile)" -x $mb(width) -y $mb(height) -p $mb(cpt)
     #
     # Update the image displayed on the screen.
     #
-    image create photo $img -format ppm -file "$imgfile"
+    image create photo $img -format ppm -file "$mb(ifile)"
 }
 
 proc naturalnumber {num} {
@@ -60,7 +66,7 @@ canvas .mbpanel -width $mbprops(width) -height $mbprops(height)
 ttk::frame .ctlpanel 
 
 ttk::frame .ctlpanel.ctr
-ttk::label .ctlpanel.ctr.title -text "Centre point" -anchor "e"
+ttk::label .ctlpanel.ctr.title -text "Centre point and zoom"
 ttk::label .ctlpanel.ctr.rlab -anchor "w" -text "Real"
 ttk::label .ctlpanel.ctr.ilab -anchor "w" -text "Imag"
 ttk::entry .ctlpanel.ctr.real -textvariable mbprops(cr) \
@@ -68,17 +74,21 @@ ttk::entry .ctlpanel.ctr.real -textvariable mbprops(cr) \
 ttk::entry .ctlpanel.ctr.imag -textvariable mbprops(ci) \
     -validate key -validatecommand {validctr %P}
 
-ttk::label .ctlpanel.zoomtitle -text "Current zoom" -anchor "e"
-ttk::label .ctlpanel.zoomvalue -anchor "w" -textvariable mbprops(zoom)
-ttk::label .ctlpanel.zfactitle -text "Zoom factor" -anchor "e"
-ttk::entry .ctlpanel.zfacvalue -textvariable mbprops(zoomfac) \
+ttk::label .ctlpanel.ctr.zlab -text "Current zoom" -anchor "e"
+ttk::label .ctlpanel.ctr.zval -anchor "w" -textvariable mbprops(zoom)
+ttk::label .ctlpanel.ctr.zflab -text "Zoom factor" -anchor "e"
+ttk::entry .ctlpanel.ctr.zfval -textvariable mbprops(zoomfac) \
     -validate key -validatecommand {validzoom %P}
-ttk::label .ctlpanel.widthtitle -text "Width" -anchor "e"
-ttk::entry .ctlpanel.widthvalue -textvariable mbprops(width) \
+
+ttk::frame .ctlpanel.img
+ttk::label .ctlpanel.img.title -text "Image properties"
+ttk::label .ctlpanel.img.wlab -text "Width" -anchor "e"
+ttk::entry .ctlpanel.img.wval -textvariable mbprops(width) \
     -validate key -validatecommand {naturalnumber %P}
-ttk::label .ctlpanel.heighttitle -text "Height" -anchor "e"
-ttk::entry .ctlpanel.heightvalue -textvariable mbprops(height) \
+ttk::label .ctlpanel.img.hlab -text "Height" -anchor "e"
+ttk::entry .ctlpanel.img.hval -textvariable mbprops(height) \
     -validate key -validatecommand {naturalnumber %P}
+
 ttk::label .ctlpanel.itertitle -text "Maximum iterations" -anchor "e"
 ttk::entry .ctlpanel.itervalue -textvariable mbprops(maxiter) \
     -validate key -validatecommand {naturalnumber %P}
@@ -98,7 +108,7 @@ ttk::button .ctlpanel.calc -text "Recalculate Mandelbrot" \
         tk busy hold .ctlpanel.calc;
         update;
         tk busy configure .mbpanel -cursor "watch";
-        calcmb mbprops $mbimg "$imgfile";
+        calcmb mbprops $mbimg
         tk busy forget .mbpanel
         tk busy forget .ctlpanel.calc
     }
@@ -108,7 +118,7 @@ ttk::button .ctlpanel.saveimg -text "Save image" \
 grid .mbpanel -column 0 -row 0
 grid .ctlpanel -column 1 -row 0
 #
-# Position the frame with the central coordinates.
+# Position the frame with the central coordinates and zoom values.
 #
 grid .ctlpanel.ctr -column 0 -row 0
 grid .ctlpanel.ctr.title -column 0 -row 0 -columnspan 2
@@ -116,15 +126,18 @@ grid .ctlpanel.ctr.rlab -column 0 -row 1
 grid .ctlpanel.ctr.real -column 1 -row 1
 grid .ctlpanel.ctr.ilab -column 0 -row 2
 grid .ctlpanel.ctr.imag -column 1 -row 2
+grid .ctlpanel.ctr.zlab -column 0 -row 3
+grid .ctlpanel.ctr.zval -column 1 -row 3
+grid .ctlpanel.ctr.zflab -column 0 -row 4
+grid .ctlpanel.ctr.zfval -column 1 -row 4
 
-grid .ctlpanel.zoomtitle -column 0 -row 1
-grid .ctlpanel.zoomvalue -column 1 -row 1
-grid .ctlpanel.zfactitle -column 0 -row 2
-grid .ctlpanel.zfacvalue -column 1 -row 2
-grid .ctlpanel.widthtitle -column 0 -row 3
-grid .ctlpanel.widthvalue -column 1 -row 3
-grid .ctlpanel.heighttitle -column 2 -row 3
-grid .ctlpanel.heightvalue -column 3 -row 3
+grid .ctlpanel.img -column 0 -row 2
+grid .ctlpanel.img.title -column 0 -row 0 -columnspan 4
+grid .ctlpanel.img.wlab -column 0 -row 1
+grid .ctlpanel.img.wval -column 1 -row 1
+grid .ctlpanel.img.hlab -column 2 -row 1
+grid .ctlpanel.img.hval -column 3 -row 1
+
 grid .ctlpanel.itertitle -column 0 -row 4
 grid .ctlpanel.itervalue -column 1 -row 4
 grid .ctlpanel.cpttitle -column 0 -row 5
@@ -135,6 +148,7 @@ grid .ctlpanel.saveimg -column 1 -row 6
 #
 # Create and display the initial image.
 #
+
 set mbimg [image create photo -format ppm \
     -width $mbprops(width) -height $mbprops(height)]
 .mbpanel create image 0 0 -image $mbimg -anchor nw
@@ -142,7 +156,7 @@ tk busy hold .mbpanel
 tk busy hold .ctlpanel.calc
 update
 tk busy configure .mbpanel -cursor "watch"
-calcmb mbprops $mbimg "$imgfile"
+calcmb mbprops $mbimg
 tk busy forget .mbpanel
 tk busy forget .ctlpanel.calc
 
@@ -157,7 +171,7 @@ bind .mbpanel <Button-1> {
     set mbprops(ci)   [expr {$mbprops(ci) + \
                        $pixwidth*($mbprops(height)/2 - %y)}]
     set mbprops(zoom) [expr {$mbprops(zoom) * $mbprops(zoomfac)}]
-    calcmb mbprops $mbimg "$imgfile"
+    calcmb mbprops $mbimg
     tk busy forget .mbpanel
     tk busy forget .ctlpanel.calc
 }
@@ -173,7 +187,7 @@ bind .mbpanel <Button-3> {
     set mbprops(ci)   [expr {$mbprops(ci) + \
                        $pixwidth*($mbprops(height)/2 - %y)}]
     set mbprops(zoom) [expr {$mbprops(zoom) / $mbprops(zoomfac)}]
-    calcmb mbprops $mbimg "$imgfile"
+    calcmb mbprops $mbimg
     tk busy forget .mbpanel
     tk busy forget .ctlpanel.calc
 }
