@@ -19,7 +19,7 @@ module mbtypes
 use, intrinsic  :: iso_fortran_env
 implicit none
 
-!integer, parameter  :: realmb = 10
-integer, parameter  :: realmb = real64
+integer, parameter  :: realmb = 10
+!integer, parameter  :: realmb = real64
 
 end module
