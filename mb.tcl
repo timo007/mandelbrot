@@ -68,7 +68,7 @@ canvas .mbpanel -width $mbprops(width) -height $mbprops(height)
 ttk::frame .ctlpanel 
 
 ttk::frame .ctlpanel.ctr
-ttk::label .ctlpanel.ctr.title -text "Mandelprot properties" \
+ttk::label .ctlpanel.ctr.title -text "Mandelbrot properties" \
     -style Header.TLabel
 ttk::label .ctlpanel.ctr.rlab -anchor "w" -text "Real" -anchor e
 ttk::label .ctlpanel.ctr.ilab -anchor "w" -text "Imag" -anchor e
@@ -78,7 +78,8 @@ ttk::entry .ctlpanel.ctr.imag -textvariable mbprops(ci) \
     -validate key -validatecommand {validctr %P}
 
 ttk::label .ctlpanel.ctr.zlab -text "Current zoom" -anchor e
-ttk::label .ctlpanel.ctr.zval -anchor "w" -textvariable mbprops(zoom) 
+ttk::entry .ctlpanel.ctr.zval -textvariable mbprops(zoom) \
+    -validate key -validatecommand {validzoom %P}
 ttk::label .ctlpanel.ctr.zflab -text "Zoom factor" -anchor "e" 
 ttk::entry .ctlpanel.ctr.zfval -textvariable mbprops(zoomfac) \
     -validate key -validatecommand {validzoom %P}
