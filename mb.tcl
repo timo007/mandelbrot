@@ -91,10 +91,10 @@ ttk::frame .ctlpanel.img -padding {0 20 0 0}
 ttk::label .ctlpanel.img.title -text "Image properties" \
     -style Header.TLabel
 ttk::label .ctlpanel.img.wlab -text "Width"
-ttk::entry .ctlpanel.img.wval -textvariable mbprops(width) \
+ttk::entry .ctlpanel.img.wval -textvariable mbprops(width) -width 6 \
     -validate key -validatecommand {naturalnumber %P}
 ttk::label .ctlpanel.img.hlab -text "Height"
-ttk::entry .ctlpanel.img.hval -textvariable mbprops(height) \
+ttk::entry .ctlpanel.img.hval -textvariable mbprops(height) -width 6 \
     -validate key -validatecommand {naturalnumber %P}
 
 ttk::label .ctlpanel.img.cptlab -text "Colour palette"
@@ -143,6 +143,7 @@ ttk::button .ctlpanel.buttons.reset -text "Reset" \
 
 grid .mbpanel -column 0 -row 0
 grid .ctlpanel -column 1 -row 0
+
 #
 # Position the frame with the central coordinates and zoom values.
 #
