@@ -23,17 +23,13 @@ defaultvals mbprops
 #
 # Call the program which computes the Mandelbrot set image.
 #
-proc calcmb {mbprops img} {
+proc calcmb {mbprops} {
     upvar 1 ${mbprops} mb
     #
     # Compute the new Mandelbrot image.
     #
     exec mb -c $mb(cr) $mb(ci) -z $mb(zoom) -i $mb(maxiter) \
         -o "$mb(ifile)" -x $mb(width) -y $mb(height) -p $mb(cpt)
-    #
-    # Update the image displayed on the screen.
-    #
-    image create photo $img -format ppm -file "$mb(ifile)"
 }
 
 #
@@ -143,7 +139,9 @@ ttk::button .ctlpanel.buttons.calc -text "Recalculate" \
         tk busy hold .ctlpanel
         update;
         tk busy configure .mbpanel -cursor "watch";
-        calcmb mbprops $mbimg
+        calcmb mbprops
+        .mbpanel configure -width $mbprops(width) -height $mbprops(height)
+        image create photo $mbimg -format ppm -file "$mbprops(ifile)"
         tk busy forget .mbpanel
         tk busy forget .ctlpanel
     }
@@ -156,7 +154,9 @@ ttk::button .ctlpanel.buttons.reset -text "Reset" \
         tk busy hold .ctlpanel;
         update;
         tk busy configure .mbpanel -cursor "watch";
-        calcmb mbprops $mbimg
+        calcmb mbprops
+        .mbpanel configure -width $mbprops(width) -height $mbprops(height)
+        image create photo $mbimg -format ppm -file "$mbprops(ifile)"
         tk busy forget .mbpanel
         tk busy forget .ctlpanel
     }
@@ -211,7 +211,9 @@ tk busy hold .mbpanel
 tk busy hold .ctlpanel
 update
 tk busy configure .mbpanel -cursor "watch"
-calcmb mbprops $mbimg
+calcmb mbprops
+.mbpanel configure -width $mbprops(width) -height $mbprops(height)
+image create photo $mbimg -format ppm -file "$mbprops(ifile)"
 tk busy forget .mbpanel
 tk busy forget .ctlpanel
 
@@ -226,7 +228,9 @@ bind .mbpanel <Button-1> {
     set mbprops(ci)   [expr {$mbprops(ci) + \
                        $pixwidth*($mbprops(height)/2 - %y)}]
     set mbprops(zoom) [expr {$mbprops(zoom) * $mbprops(zoomfac)}]
-    calcmb mbprops $mbimg
+    calcmb mbprops
+    .mbpanel configure -width $mbprops(width) -height $mbprops(height)
+    image create photo $mbimg -format ppm -file "$mbprops(ifile)"
     tk busy forget .mbpanel
     tk busy forget .ctlpanel
 }
@@ -242,7 +246,9 @@ bind .mbpanel <Button-3> {
     set mbprops(ci)   [expr {$mbprops(ci) + \
                        $pixwidth*($mbprops(height)/2 - %y)}]
     set mbprops(zoom) [expr {$mbprops(zoom) / $mbprops(zoomfac)}]
-    calcmb mbprops $mbimg
+    calcmb mbprops
+    .mbpanel configure -width $mbprops(width) -height $mbprops(height)
+    image create photo $mbimg -format ppm -file "$mbprops(ifile)"
     tk busy forget .mbpanel
     tk busy forget .ctlpanel
 }
