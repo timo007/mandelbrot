@@ -30,7 +30,14 @@ proc naturalnumber {num} {
     if { [string is integer $num] && ($num > 0)} {
         return 1
     } else {
-        puts "Error: $num is not a natural number."
+        return 0
+    }
+}
+
+proc validctr {num} {
+    if { [string is double $num] } {
+        return 1
+    } else {
         return 0
     }
 }
@@ -39,7 +46,6 @@ proc validzoom {num} {
     if { [string is double $num] && ($num > 0)} {
         return 1
     } else {
-        puts "Error: $num is an invalid zoom factor."
         return 0
     }
 }
@@ -58,28 +64,24 @@ ttk::label .ctlpanel.ctr.title -text "Centre point" -anchor "e"
 ttk::label .ctlpanel.ctr.rlab -anchor "w" -text "Real"
 ttk::label .ctlpanel.ctr.ilab -anchor "w" -text "Imag"
 ttk::entry .ctlpanel.ctr.real -textvariable mbprops(cr) \
-    -validate focusout -validatecommand {string is double $mbprops(cr)}
+    -validate key -validatecommand {validctr %P}
 ttk::entry .ctlpanel.ctr.imag -textvariable mbprops(ci) \
-    -validate focusout -validatecommand {string is double $mbprops(ci)}
+    -validate key -validatecommand {validctr %P}
 
 ttk::label .ctlpanel.zoomtitle -text "Current zoom" -anchor "e"
 ttk::label .ctlpanel.zoomvalue -anchor "w" -textvariable mbprops(zoom)
 ttk::label .ctlpanel.zfactitle -text "Zoom factor" -anchor "e"
 ttk::entry .ctlpanel.zfacvalue -textvariable mbprops(zoomfac) \
-    -validate focusout -validatecommand {validzoom $mbprops(zoomfac)} \
-    -invalidcommand {set mbprops(zoomfac) 1.0}
+    -validate key -validatecommand {validzoom %P}
 ttk::label .ctlpanel.widthtitle -text "Width" -anchor "e"
 ttk::entry .ctlpanel.widthvalue -textvariable mbprops(width) \
-    -validate focusout -validatecommand {naturalnumber $mbprops(width)} \
-    -invalidcommand {set mbprops(width) 1280}
+    -validate key -validatecommand {naturalnumber %P}
 ttk::label .ctlpanel.heighttitle -text "Height" -anchor "e"
 ttk::entry .ctlpanel.heightvalue -textvariable mbprops(height) \
-    -validate focusout -validatecommand {naturalnumber $mbprops(height)} \
-    -invalidcommand {set mbprops(height) 720}
+    -validate key -validatecommand {naturalnumber %P}
 ttk::label .ctlpanel.itertitle -text "Maximum iterations" -anchor "e"
 ttk::entry .ctlpanel.itervalue -textvariable mbprops(maxiter) \
-    -validate focusout -validatecommand {naturalnumber $mbprops(maxiter)} \
-    -invalidcommand {set mbprops(maxiter) 1000}
+    -validate key -validatecommand {naturalnumber %P}
 ttk::label .ctlpanel.cpttitle -text "Colour palette" -anchor "e"
 ttk::menubutton .ctlpanel.cptmenu -menu .ctlpanel.cptmenu.cpt -textvariable mbprops(cpt)
 menu .ctlpanel.cptmenu.cpt
