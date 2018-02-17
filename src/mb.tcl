@@ -161,8 +161,8 @@ ttk::button .ctlpanel.buttons.reset -text "Reset" \
         tk busy forget .ctlpanel
     }
 
-grid .mbpanel -column 0 -row 0
-grid .ctlpanel -column 1 -row 0
+grid .mbpanel -column 0 -row 0 -sticky n
+grid .ctlpanel -column 1 -row 0 -sticky n
 
 #
 # Position the frame with the Mandelbrot settings.
