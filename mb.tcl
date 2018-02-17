@@ -60,9 +60,10 @@ proc validzoom {num} {
 proc saveimg {img} {
     set ofile [tk_getSaveFile -confirmoverwrite true \
         -defaultextension ".png"]
-    $img write -format png "$ofile"
+    if { [string length $ofile] > 0 } {
+        $img write -format png "$ofile"
+    }
 }
-
 
 canvas .mbpanel -width $mbprops(width) -height $mbprops(height) 
 ttk::frame .ctlpanel 
