@@ -19,7 +19,15 @@ module mbtypes
 use, intrinsic  :: iso_fortran_env
 implicit none
 
-integer, parameter  :: realmb = 10
-!integer, parameter  :: realmb = real64
+#if defined REAL80
+    !
+    ! On some CPUs (e.g. Intel, AMD84), 80 bit reals are available. Use these
+    ! in preference to 64 bit reals because testing indicated there were no
+    ! speed implications, and 80 bits allows deeper Mandelbrot zooming.
+    !
+    integer, parameter  :: realmb = 10
+#else
+    integer, parameter  :: realmb = real64
+#endif
 
 end module

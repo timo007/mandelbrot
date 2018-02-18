@@ -34,7 +34,7 @@ subroutine fillplane(cr, ci, nx, ny, zoom, itermax, niter)
     integer(int32)                                  :: i, j
     complex(realmb)                                 :: c
 
-    inc = 4.0/real(ny,realmb)/zoom
+    inc = 1.0/real(ny,realmb)/zoom
 
     do j=1,ny
         dy = (j-ny/2)*inc

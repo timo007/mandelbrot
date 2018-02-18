@@ -39,7 +39,7 @@ subroutine read_cmd(cr, ci, nx, ny, zoom, itermax, cpt, imgfile)
     ci      = 0.0
     nx      = 1920
     ny      = 1080
-    zoom    = 1.0
+    zoom    = 0.25
     itermax = 500
     cpt     = "haxby"
     imgfile = "mb.ppm"

@@ -12,7 +12,7 @@ proc defaultvals {mbprops} {
     set mb(height)     720
     set mb(cr)         0.0
     set mb(ci)         0.0
-    set mb(zoom)       1.0
+    set mb(zoom)       0.25
     set mb(zoomfac)    5.0
     set mb(maxiter)    1000
     set mb(cpt)        "haxby"
@@ -244,7 +244,7 @@ bind .mbpanel <Button-1> {
     tk busy hold .ctlpanel
     update
     tk busy configure .mbpanel -cursor "watch"
-    set pixwidth      [expr {4.0/$mbprops(height)/$mbprops(zoom)}]
+    set pixwidth      [expr {1.0/$mbprops(height)/$mbprops(zoom)}]
     set mbprops(cr)   [expr {$mbprops(cr) + \
                        $pixwidth*(%x - $mbprops(width)/2)}]
     set mbprops(ci)   [expr {$mbprops(ci) + \
@@ -263,7 +263,7 @@ bind .mbpanel <Button-3> {
     tk busy hold .ctlpanel
     update
     tk busy configure .mbpanel -cursor "watch"
-    set pixwidth      [expr {4.0/$mbprops(height)/$mbprops(zoom)}]
+    set pixwidth      [expr {1.0/$mbprops(height)/$mbprops(zoom)}]
     set mbprops(cr)   [expr {$mbprops(cr) + \
                        $pixwidth*(%x - $mbprops(width)/2)}]
     set mbprops(ci)   [expr {$mbprops(ci) + \
