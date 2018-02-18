@@ -19,7 +19,7 @@ module mbtypes
 use, intrinsic  :: iso_fortran_env
 implicit none
 
-#if defined REAL80
+#if defined x86_64
     !
     ! On some CPUs (e.g. Intel, AMD84), 80 bit reals are available. Use these
     ! in preference to 64 bit reals because testing indicated there were no
