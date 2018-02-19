@@ -1,4 +1,6 @@
-#!/usr/bin/wish
+#!/bin/sh
+# the next line restarts using wish \
+exec wish "$0" ${1+"$@"}
 
 ttk::style theme use classic
 ttk::style configure Header.TLabel -font TkHeadingFont
