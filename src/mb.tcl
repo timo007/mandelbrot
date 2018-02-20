@@ -2,6 +2,9 @@
 # the next line restarts using wish \
 exec wish "$0" ${1+"$@"}
 
+#
+# Set the style.
+#
 ttk::style theme use classic
 ttk::style configure Header.TLabel -font TkHeadingFont
 
@@ -106,8 +109,8 @@ ttk::frame .ctlpanel
 ttk::frame .ctlpanel.ctr
 ttk::label .ctlpanel.ctr.title -text "Mandelbrot properties" \
     -style Header.TLabel
-ttk::label .ctlpanel.ctr.rlab -anchor "w" -text "Real" -anchor e
-ttk::label .ctlpanel.ctr.ilab -anchor "w" -text "Imag" -anchor e
+ttk::label .ctlpanel.ctr.rlab -anchor "w" -text "Centre Real" -anchor e
+ttk::label .ctlpanel.ctr.ilab -anchor "w" -text "Centre Imag" -anchor e
 ttk::entry .ctlpanel.ctr.real -textvariable mbprops(cr) \
     -validate key -validatecommand {validctr %P}
 ttk::entry .ctlpanel.ctr.imag -textvariable mbprops(ci) \
@@ -154,7 +157,7 @@ menu .ctlpanel.img.cptmenu.cpt
     -command {set mbprops(cpt) "viridis"}
 
 ttk::frame .ctlpanel.buttons -padding {0 20 0 0}
-ttk::button .ctlpanel.buttons.calc -text "Recalculate" \
+ttk::button .ctlpanel.buttons.calc -text "Calculate" \
     -command {
         tk busy hold .mbpanel;
         tk busy hold .ctlpanel
@@ -167,7 +170,7 @@ ttk::button .ctlpanel.buttons.calc -text "Recalculate" \
         tk busy forget .mbpanel
         tk busy forget .ctlpanel
     }
-ttk::button .ctlpanel.buttons.saveimg -text "Save image" \
+ttk::button .ctlpanel.buttons.saveimg -text "Save" \
     -command {saveimg $mbimg}
 ttk::button .ctlpanel.buttons.reset -text "Reset" \
     -command {
@@ -183,12 +186,17 @@ ttk::button .ctlpanel.buttons.reset -text "Reset" \
         tk busy forget .mbpanel
         tk busy forget .ctlpanel
     }
+ttk::button .ctlpanel.buttons.quit -text "Quit" \
+    -command {exit 0}
 
+#
+# Position the Mandelbrot canvas and control panel.
+#
 grid .mbpanel -column 0 -row 0 -sticky n
 grid .ctlpanel -column 1 -row 0 -sticky n
 
 #
-# Position the frame with the Mandelbrot settings.
+# Position the various control panel widgets.
 #
 grid .ctlpanel.ctr -column 0 -row 0
 grid .ctlpanel.ctr.title -column 0 -row 0 -columnspan 2
@@ -222,25 +230,11 @@ grid .ctlpanel.buttons -column 0 -row 2
 grid .ctlpanel.buttons.calc -column 0 -row 0
 grid .ctlpanel.buttons.saveimg -column 1 -row 0
 grid .ctlpanel.buttons.reset -column 2 -row 0
+grid .ctlpanel.buttons.quit -column 3 -row 0
 
 #
-# Create and display the initial image.
+# Left and right mouse button bindings.
 #
-
-set mbimg [image create photo -format ppm \
-    -width $mbprops(width) -height $mbprops(height)]
-.mbpanel create image 0 0 -image $mbimg -anchor nw
-tk busy hold .mbpanel
-tk busy hold .ctlpanel
-update
-tk busy configure .mbpanel -cursor "watch"
-calcmb mbprops
-.mbpanel configure -width [canwidth $mbprops(width)] \
-    -height [canheight $mbprops(height)]
-image create photo $mbimg -format ppm -file "$mbprops(ifile)"
-tk busy forget .mbpanel
-tk busy forget .ctlpanel
-
 bind .mbpanel <Button-1> {
     tk busy hold .mbpanel
     tk busy hold .ctlpanel
@@ -278,3 +272,20 @@ bind .mbpanel <Button-3> {
     tk busy forget .mbpanel
     tk busy forget .ctlpanel
 }
+
+#
+# Create and display the initial image.
+#
+set mbimg [image create photo -format ppm \
+    -width $mbprops(width) -height $mbprops(height)]
+.mbpanel create image 0 0 -image $mbimg -anchor nw
+tk busy hold .mbpanel
+tk busy hold .ctlpanel
+update
+tk busy configure .mbpanel -cursor "watch"
+calcmb mbprops
+.mbpanel configure -width [canwidth $mbprops(width)] \
+    -height [canheight $mbprops(height)]
+image create photo $mbimg -format ppm -file "$mbprops(ifile)"
+tk busy forget .mbpanel
+tk busy forget .ctlpanel
