@@ -1,9 +1,9 @@
 #!/usr/bin/env ksh
 
-gfortran -cpp -D$(uname -m) -O3 -Wall -c mbtypes.f90
-gfortran -O3 -Wall -c mbmath.f90
-gfortran -O3 -Wall -c mrgrnk.f90
-gfortran -O3 -Wall -c setup.f90
-gfortran -O3 -Wall -c image.f90
-gfortran -O3 -Wall -c mandelbrot.f90
-gfortran -O3 -Wall -o mb mrgrnk.o setup.o mbtypes.o mbmath.o image.o mandelbrot.o
+gfortran -Ofast -march=native -Wall -c mbtypes.f90
+gfortran -Ofast -march=native -Wall -c mbmath.f90
+gfortran -Ofast -march=native -Wall -c mrgrnk.f90
+gfortran -Ofast -march=native -Wall -c setup.f90
+gfortran -Ofast -march=native -Wall -c image.f90
+gfortran -Ofast -march=native -Wall -c mandelbrot.f90
+gfortran -Ofast -march=native -Wall -o mb mrgrnk.o setup.o mbtypes.o mbmath.o image.o mandelbrot.o
