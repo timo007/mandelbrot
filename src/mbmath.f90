@@ -21,18 +21,18 @@ contains
 subroutine fillplane(cr, ci, nx, ny, zoom, itermax, niter)
     implicit none
 
-    real(realmb), intent(in)                        :: cr
-    real(realmb), intent(in)                        :: ci
-    integer(int32), intent(in)                      :: nx
-    integer(int32), intent(in)                      :: ny
-    real(realmb), intent(in)                        :: zoom
-    integer(int32), intent(in)                      :: itermax
-    real(real64), intent(out),  dimension(nx, ny)   :: niter
+    real(kind=realmb), intent(in)                       :: cr
+    real(kind=realmb), intent(in)                       :: ci
+    integer(kind=int32), intent(in)                     :: nx
+    integer(kind=int32), intent(in)                     :: ny
+    real(kind=realmb), intent(in)                       :: zoom
+    integer(kind=int32), intent(in)                     :: itermax
+    real(kind=real64), intent(out),  dimension(nx, ny)  :: niter
 
-    real(realmb)                                    :: inc
-    real(realmb)                                    :: dx, dy
-    integer(int32)                                  :: i, j
-    complex(realmb)                                 :: c
+    real(kind=realmb)                                   :: inc
+    real(kind=realmb)                                   :: dx, dy
+    integer(kind=int32)                                 :: i, j
+    complex(kind=realmb)                                :: c
 
     inc = 1.0/real(ny,realmb)/zoom
 
@@ -50,37 +50,30 @@ end subroutine
 function mbpoint(c, nmax) result(nr)
     implicit none
 
-    complex(realmb), intent(in)     :: c        ! Point being tested
-    integer(int32), intent(in)      :: nmax     ! Maximum iterations
-    integer(int32)                  :: n        ! Number of iterations
-    real(real64)                    :: nr       ! Real version of n
-    complex(realmb)                 :: z
-    complex(realmb), dimension(10)  :: zprev    ! Previous value of z
-    integer(int32)                  :: ppos
-    real(realmb)                    :: mag2     ! abs(z)^2
-    real(realmb)                    :: logzn, nu
+    complex(kind=realmb), intent(in)     :: c        ! Point being tested
+    integer(kind=int32), intent(in)      :: nmax     ! Maximum iterations
+    integer(kind=int32)                  :: n        ! Number of iterations
+    real(kind=real64)                    :: nr       ! Real version of n
+    complex(kind=realmb)                 :: z
+    complex(kind=realmb)                 :: zprev    ! Previous value of z
+    real(kind=realmb)                    :: mag2     ! abs(z)^2
+    real(kind=realmb)                    :: logzn, nu
 
     n = 1
     z = (0, 0)
     mag2 = 0
-    zprev = (1000, 1000)
-    ppos = 1
+    zprev = (0, 0)
 
     do while ((mag2 < 65536) .and. (n < nmax))
-        zprev = eoshift(zprev, 1, z)
+        zprev = z
         z = z**2 + c
         !
         ! If z is the same as at the previous iteration, we can
         ! break out of the loop because we must be in the Mandelbrot
         ! set.
         !
-        ppos = 10
-        do while ((zprev(ppos) /= z) .and. (ppos > 0))
-            ppos = ppos - 1
-        end do
 
-        if (ppos > 0) then
-            print *,ppos
+        if (zprev == z) then
             n = nmax
         else
             mag2 = real(z, realmb)**2 + aimag(z)**2
