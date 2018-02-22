@@ -55,23 +55,32 @@ function mbpoint(c, nmax) result(nr)
     integer(int32)                  :: n        ! Number of iterations
     real(real64)                    :: nr       ! Real version of n
     complex(realmb)                 :: z
-    complex(realmb)                 :: zprev    ! Previous value of z
+    complex(realmb), dimension(10)  :: zprev    ! Previous value of z
+    integer(int32)                  :: ppos
     real(realmb)                    :: mag2     ! abs(z)^2
     real(realmb)                    :: logzn, nu
 
     n = 1
     z = (0, 0)
     mag2 = 0
+    zprev = (1000, 1000)
+    ppos = 1
 
     do while ((mag2 < 65536) .and. (n < nmax))
-        zprev = z
+        zprev = eoshift(zprev, 1, z)
         z = z**2 + c
         !
         ! If z is the same as at the previous iteration, we can
         ! break out of the loop because we must be in the Mandelbrot
         ! set.
         !
-        if (z == zprev) then
+        ppos = 10
+        do while ((zprev(ppos) /= z) .and. (ppos > 0))
+            ppos = ppos - 1
+        end do
+
+        if (ppos > 0) then
+            print *,ppos
             n = nmax
         else
             mag2 = real(z, realmb)**2 + aimag(z)**2
