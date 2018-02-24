@@ -28,10 +28,10 @@ program mandelbrot
     character(len=128)          :: cpt      ! Name of colour palette to use
     integer(int32)              :: nx       ! Width of image
     integer(int32)              :: ny       ! Height of image
-    integer(int32)              :: itermax  ! Maximimum number of iterations
-    real(realmb)               :: zoom     ! Zoom factor
-    real(realmb)               :: cr       ! Real part of centre point
-    real(realmb)               :: ci       ! Imaginary part of centre point
+    integer(int64)              :: itermax  ! Maximimum number of iterations
+    real(real128)               :: zoom     ! Zoom factor
+    real(real128)               :: cr       ! Real part of centre point
+    real(real128)               :: ci       ! Imaginary part of centre point
 
     real(real64), allocatable   :: niter(:,:) ! Results array
 
@@ -48,7 +48,7 @@ program mandelbrot
     !
     ! Compute the Mandelbrot set for the points of interest.
     !
-    !call fillplane(cr, ci, nx, ny, zoom, itermax, niter)
+    !call fillplane(real(cr, realmb), real(ci, realmb), nx, ny, real(zoom, realmb), itermax, niter)
     call mbplane(cr, ci, nx, ny, zoom, itermax, niter)
 
     !

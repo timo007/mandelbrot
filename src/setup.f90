@@ -19,13 +19,13 @@ use mbtypes
 contains
 
 subroutine read_cmd(cr, ci, nx, ny, zoom, itermax, cpt, imgfile)
-    real(realmb), intent(out)          :: cr
-    real(realmb), intent(out)          :: ci
+    real(real128), intent(out)          :: cr
+    real(real128), intent(out)          :: ci
     integer(int32), intent(out)         :: nx
     integer(int32), intent(out)         :: ny
-    real(realmb), intent(out)          :: zoom
-    integer(int32), intent(out)         :: itermax
-    character(len=128), intent(out)    :: cpt
+    real(real128), intent(out)          :: zoom
+    integer(int64), intent(out)         :: itermax
+    character(len=128), intent(out)     :: cpt
     character(len=1024), intent(out)    :: imgfile
 
     character(len=1024)                 :: arg1, arg2, arg3

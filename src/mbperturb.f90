@@ -10,7 +10,7 @@ subroutine mbplane(cr, ci, nx, ny, zoom, itermax, ncritr)
     real(kind=real128), intent(in)                      :: cr, ci   ! Will need to be MP later on.
     integer(kind=int32), intent(in)                     :: nx
     integer(kind=int32), intent(in)                     :: ny
-    real(kind=real64), intent(in)                       :: zoom
+    real(kind=real128), intent(in)                      :: zoom
     integer(kind=int64), intent(in)                     :: itermax  ! Might change to int64.
     real(kind=real64), dimension(nx, ny), intent(out)   :: ncritr
 
@@ -23,9 +23,9 @@ subroutine mbplane(cr, ci, nx, ny, zoom, itermax, ncritr)
     real(kind=real64), dimension(nx, ny)                :: mag2     ! Magnitude squared of fdelta
     integer(kind=int64), dimension(nx, ny)              :: ncrit    ! Critical iteration (mgiht change to int64)
 
-    integer(kind=int32)                         :: n        ! Iteration counter.
+    integer(kind=int64)                         :: n        ! Iteration counter.
     integer(kind=int32)                         :: i, j
-    real(kind=real64)                           :: dr, di
+    real(kind=real128)                          :: dr, di
 
 
     !
@@ -61,7 +61,7 @@ subroutine mbplane(cr, ci, nx, ny, zoom, itermax, ncritr)
             !
             ! Compute h for the next iteration.
             !
-            h = h*(2*fc + delta*h) + 1
+            h = h*(2*real(fc, real64) + real(delta, real64)*h) + 1
         elsewhere
             where (ncrit == 0)
                 ncrit = n
