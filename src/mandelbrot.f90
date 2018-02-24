@@ -18,6 +18,7 @@ program mandelbrot
     use setup
     use image
     use mbmath
+    use mbperturb
     implicit none
 
     !
@@ -47,7 +48,8 @@ program mandelbrot
     !
     ! Compute the Mandelbrot set for the points of interest.
     !
-    call fillplane(cr, ci, nx, ny, zoom, itermax, niter)
+    !call fillplane(cr, ci, nx, ny, zoom, itermax, niter)
+    call mbplane(cr, ci, nx, ny, zoom, itermax, niter)
 
     !
     ! Colorise the set.

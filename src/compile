@@ -1,9 +1,10 @@
 #!/usr/bin/env ksh
 
 gfortran -O3 -march=native -Wall -c mbtypes.f90
+gfortran -O3 -march=native -Wall -c mbperturb.f90
 gfortran -O3 -march=native -Wall -c mbmath.f90
 gfortran -O3 -march=native -Wall -c mrgrnk.f90
 gfortran -O3 -march=native -Wall -c setup.f90
 gfortran -O3 -march=native -Wall -c image.f90
 gfortran -O3 -march=native -Wall -c mandelbrot.f90
-gfortran -O3 -march=native -Wall -o mb mrgrnk.o setup.o mbtypes.o mbmath.o image.o mandelbrot.o
+gfortran -O3 -march=native -Wall -o mb mrgrnk.o setup.o mbtypes.o mbperturb.o mbmath.o image.o mandelbrot.o
