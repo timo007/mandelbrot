@@ -56,12 +56,12 @@ subroutine mbplane(cr, ci, nx, ny, zoom, itermax, ncritr)
         ! Compute the Mandelbrot function for this iteration at all the offset points.
         !
         where (mag2 < 65536)
-            fdelta = real(fc, real64) + real(delta, real64)*h
+            fdelta = cmplx(fc, kind=real64) + cmplx(delta, kind=real64)*h
             mag2 = real(fdelta, real64)**2 + aimag(fdelta)**2
             !
             ! Compute h for the next iteration.
             !
-            h = h*(2*real(fc, real64) + real(delta, real64)*h) + 1
+            h = h*(2*cmplx(fc, kind=real64) + cmplx(delta, kind=real64)*h) + 1
         elsewhere
             where (ncrit == 0)
                 ncrit = n
