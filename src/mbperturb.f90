@@ -1,4 +1,5 @@
-! This module contains code to implement
+! This module contains code to implement Sergey Khashin's
+! algorithm. See: http://math.ivanovo.ac.ru/dalgebra/Khashin/man2/Mandelbrot.pdf
 
 module mbperturb
 use, intrinsic  :: iso_fortran_env
