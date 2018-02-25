@@ -23,6 +23,7 @@ subroutine mbplane(cr, ci, nx, ny, zoom, itermax, ncritr)
     complex(kind=real64), dimension(nx, ny)             :: fdelta   ! Mandelbrot function at offset points.
     real(kind=real64), dimension(nx, ny)                :: mag2     ! Magnitude squared of fdelta
     integer(kind=int64), dimension(nx, ny)              :: ncrit    ! Critical iteration (mgiht change to int64)
+    logical, dimension(nx, ny)                          :: mask     ! Mask for points still to be processed.
 
     integer(kind=int64)                         :: n        ! Iteration counter.
     integer(kind=int32)                         :: i, j
@@ -50,25 +51,31 @@ subroutine mbplane(cr, ci, nx, ny, zoom, itermax, ncritr)
     ncritr = 0
     h   = 0
     fc  = (0, 0)
+    mask = .true.
 
     do n=1,itermax
-        print *,'Hi there ',n
+        !print *,'Hi there ',n
         !
         ! Compute the Mandelbrot function for this iteration at all the offset points.
+        ! These where statements are inefficient. Use loops over points instead
         !
-        where (mag2 < 65536)
+        where (mask)
             fdelta = cmplx(fc, kind=real64) + cmplx(delta, kind=real64)*h
             mag2 = real(fdelta, real64)**2 + aimag(fdelta)**2
             !
             ! Compute h for the next iteration.
             !
             h = h*(2*cmplx(fc, kind=real64) + cmplx(delta, kind=real64)*h) + 1
-        elsewhere
-            where (ncrit == 0)
+            !
+            ! Process points where the Mandelbrot function has crossed the threshold.
+            !
+            where (mag2 > 65536)
                 ncrit = n
                 ncritr = real(n, real64) + 1.0 - log((log(mag2)/2.0)/log(2.0))/log(2.0)
+                mask = .false.
             end where
         end where
+
 
         !
         ! Compute fc in arbitrary precision for the next iteration.
@@ -76,6 +83,7 @@ subroutine mbplane(cr, ci, nx, ny, zoom, itermax, ncritr)
         fc  = fc**2 + cpnt
 
     end do
+
 
 end subroutine
 
