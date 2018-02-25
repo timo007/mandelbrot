@@ -26,7 +26,7 @@ subroutine fillplane(cr, ci, nx, ny, zoom, itermax, niter)
     integer(kind=int32), intent(in)                     :: nx
     integer(kind=int32), intent(in)                     :: ny
     real(kind=realmb), intent(in)                       :: zoom
-    integer(kind=int32), intent(in)                     :: itermax
+    integer(kind=int64), intent(in)                     :: itermax
     real(kind=real64), intent(out),  dimension(nx, ny)  :: niter
 
     real(kind=realmb)                                   :: inc
@@ -51,8 +51,8 @@ function mbpoint(c, nmax) result(nr)
     implicit none
 
     complex(kind=realmb), intent(in)     :: c        ! Point being tested
-    integer(kind=int32), intent(in)      :: nmax     ! Maximum iterations
-    integer(kind=int32)                  :: n        ! Number of iterations
+    integer(kind=int64), intent(in)      :: nmax     ! Maximum iterations
+    integer(kind=int64)                  :: n        ! Number of iterations
     real(kind=real64)                    :: nr       ! Real version of n
     complex(kind=realmb)                 :: z
     complex(kind=realmb)                 :: zprev    ! Previous value of z

@@ -12,18 +12,16 @@ subroutine mbplane(cr, ci, nx, ny, zoom, itermax, ncritr)
     integer(kind=int32), intent(in)                     :: nx
     integer(kind=int32), intent(in)                     :: ny
     real(kind=real128), intent(in)                      :: zoom
-    integer(kind=int64), intent(in)                     :: itermax  ! Might change to int64.
+    integer(kind=int64), intent(in)                     :: itermax
     real(kind=real64), dimension(nx, ny), intent(out)   :: ncritr
 
     complex(kind=real128)                               :: cpnt
     real(kind=real128)                                  :: inc
-    complex(kind=real128), dimension(nx, ny)            :: delta    ! Will need to be MP later on.
-    complex(kind=real64), dimension(nx, ny)             :: h        ! real64 should suffice.
-    complex(kind=real128)                               :: fc       ! Mandelbrot function at the centre.
-    complex(kind=real64), dimension(nx, ny)             :: fdelta   ! Mandelbrot function at offset points.
-    real(kind=real64), dimension(nx, ny)                :: mag2     ! Magnitude squared of fdelta
-    integer(kind=int64), dimension(nx, ny)              :: ncrit    ! Critical iteration (mgiht change to int64)
-    logical, dimension(nx, ny)                          :: mask     ! Mask for points still to be processed.
+    complex(kind=real128)                               :: delta    ! Will need to be MP later on.
+    complex(kind=real64)                                :: h        ! real64 should suffice.
+    complex(kind=real128), dimension(0:itermax-1)       :: fc       ! Mandelbrot function at the centre.
+    complex(kind=real64)                                :: fdelta   ! Mandelbrot function at offset points.
+    real(kind=real64)                                   :: mag2     ! Magnitude squared of fdelta
 
     integer(kind=int64)                         :: n        ! Iteration counter.
     integer(kind=int32)                         :: i, j
@@ -31,59 +29,44 @@ subroutine mbplane(cr, ci, nx, ny, zoom, itermax, ncritr)
 
 
     !
-    ! Compute delta at each point in the plane.
+    ! Compute the centre point at high precision.
     !
-    inc = 1.0/real(ny, real128)/zoom
-    do j=1,ny
-        di = (j-ny/2)*inc
-        do i=1,nx
-            dr = (i-nx/2)*inc
-            delta(i, j) = cmplx(dr, di, real128)
-        end do
+    print *,'Computing high precision point'
+    cpnt = cmplx(cr, ci, kind=real128)
+    fc(0) = 0
+    do n=1,itermax-1
+        fc(n) = fc(n-1)**2 + cpnt
     end do
 
     !
     ! Recursively calculate the Mandelbrot function.
     !
-    mag2 = 0
-    cpnt = cmplx(cr, ci, real128)
-    ncrit = 0
-    ncritr = 0
-    h   = 0
-    fc  = (0, 0)
-    mask = .true.
+    inc = 1.0/real(ny, kind=real128)/zoom
+    do j=1,ny
+        di = real(((j-ny/2)*inc), kind=real128)
+        do i=1,nx
+            dr = real(((i-nx/2)*inc), kind=real128)
+            delta = cmplx(dr, di, kind=real128)
+            mag2 = 0
+            h = 0
+            n = 0
+            do while ((n < itermax) .and. (mag2 < 65536))
+                fdelta = cmplx(fc(n), kind=real64) + cmplx(delta, kind=real64)*h
+                mag2 = real(fdelta, kind=real64)**2 + aimag(fdelta)**2
+                !
+                ! Compute h for the next iteration.
+                !
+                h = h*(2*cmplx(fc(n), kind=real64) + cmplx(delta, kind=real64)*h) + 1
+                n = n + 1
+            end do
 
-    do n=1,itermax
-        !print *,'Hi there ',n
-        !
-        ! Compute the Mandelbrot function for this iteration at all the offset points.
-        ! These where statements are inefficient. Use loops over points instead
-        !
-        where (mask)
-            fdelta = cmplx(fc, kind=real64) + cmplx(delta, kind=real64)*h
-            mag2 = real(fdelta, real64)**2 + aimag(fdelta)**2
-            !
-            ! Compute h for the next iteration.
-            !
-            h = h*(2*cmplx(fc, kind=real64) + cmplx(delta, kind=real64)*h) + 1
-            !
-            ! Process points where the Mandelbrot function has crossed the threshold.
-            !
-            where (mag2 > 65536)
-                ncrit = n
-                ncritr = real(n, real64) + 1.0 - log((log(mag2)/2.0)/log(2.0))/log(2.0)
-                mask = .false.
-            end where
-        end where
-
-
-        !
-        ! Compute fc in arbitrary precision for the next iteration.
-        !
-        fc  = fc**2 + cpnt
-
+            if (n < itermax) then
+                ncritr(i,j) = real(n, kind=real64) + 1.0 - log((log(mag2)/2.0)/log(2.0))/log(2.0)
+            else
+                ncritr(i,j) = 0.0
+            end if
+        end do
     end do
-
 
 end subroutine
 

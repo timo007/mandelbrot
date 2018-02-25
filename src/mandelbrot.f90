@@ -48,8 +48,8 @@ program mandelbrot
     !
     ! Compute the Mandelbrot set for the points of interest.
     !
-    !call fillplane(real(cr, realmb), real(ci, realmb), nx, ny, real(zoom, realmb), itermax, niter)
-    call mbplane(cr, ci, nx, ny, zoom, itermax, niter)
+    call fillplane(real(cr, realmb), real(ci, realmb), nx, ny, real(zoom, realmb), itermax, niter)
+    !call mbplane(cr, ci, nx, ny, zoom, itermax, niter)
 
     !
     ! Colorise the set.
