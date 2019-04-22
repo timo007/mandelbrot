@@ -18,7 +18,6 @@ program mandelbrot
     use setup
     use image
     use mbmath
-    use mbperturb
     implicit none
 
     !
