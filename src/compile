@@ -1,4 +1,4 @@
-#!/usr/bin/env ksh
+#!/usr/bin/env bash
 
 gfortran -O3 -march=native -Wall -c mbtypes.f90
 gfortran -O3 -march=native -Wall -c mbmath.f90
