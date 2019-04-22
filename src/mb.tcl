@@ -13,8 +13,8 @@ ttk::style configure Header.TLabel -font TkHeadingFont
 #
 proc defaultvals {mbprops} {
     upvar 1 ${mbprops} mb
-    set mb(width)      300
-    set mb(height)     200
+    set mb(width)      800
+    set mb(height)     500
     set mb(cr)         0.0
     set mb(ci)         0.0
     set mb(zoom)       0.25
